@@ -3,6 +3,7 @@ from config import DATABASE, TOKEN
 from telebot import TeleBot
 from telebot.types import ReplyKeyboardMarkup
 
+# Data for inserting into tables
 skills = [(_,) for _ in (['Python', 'SQL', 'API', 'Telegram'])]
 statuses = [(_,) for _ in (['На этапе проектирования', 'В процессе разработки', 'Разработан. Готов к использованию.', 'Обновлен', 'Завершен. Не поддерживается'])]
 

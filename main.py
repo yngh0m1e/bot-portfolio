@@ -3,8 +3,11 @@ from config import *
 from telebot import TeleBot, types
 from telebot.types import ReplyKeyboardMarkup
 
+# Initialize bot with token
 bot = TeleBot(TOKEN)
-hideBoard = types.ReplyKeyboardRemove() 
+hideBoard = types.ReplyKeyboardRemove()
+
+# Handlers for bot commands
 def start(message):
     keyboard = [['📄 Info', '❓ Help']]
     reply_markup = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True)
@@ -35,12 +38,15 @@ def help_command(message):
     bot.send_message(message.chat.id, help_message, parse_mode='Markdown')
 
 def main():
+    # Initialize the database manager and set up the database
     manager = DB_Manager(DATABASE)
     manager.create_tables()
     manager.default_insert()
 
+    # Add photo column if not exists
     manager.add_photo_column()
     
+    # Test insertion or update
     user_id = 1
     project_name = 'Test Project'
     description = 'Description of Test Project'
@@ -50,24 +56,20 @@ def main():
     
     manager.insert_or_update_project(user_id, project_name, description, url, status_id, photo)
     
+    # Verify insertion or update
     print(manager.get_projects(user_id))
     print(manager.get_project_info(user_id, project_name))
 
+    # Insert skill
     manager.insert_skill(user_id, project_name, 'Python')
     print(manager.get_project_skills(project_name))
 
-    @bot.message_handler(commands=['start'])
-    def handle_start(message):
-        start(message)
+    # Add bot handlers
+    bot.message_handler(commands=['start'])(start)
+    bot.message_handler(commands=['info'])(info)
+    bot.message_handler(commands=['help'])(help_command)
 
-    @bot.message_handler(commands=['info'])
-    def handle_info(message):
-        info(message)
-
-    @bot.message_handler(commands=['help'])
-    def handle_help(message):
-        help_command(message)
-
+    # Start polling for messages
     bot.polling()
 
 if __name__ == '__main__':
