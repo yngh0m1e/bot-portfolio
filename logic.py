@@ -186,3 +186,27 @@ def main():
 
     manager.insert_skill(user_id, project_name, 'Python')
     print(manager.get_project_skills(project_name))
+
+# Добавление столбца для описания проекта
+def add_description_column(self):
+    conn = sqlite3.connect(self.database)
+    with conn:
+        conn.execute('ALTER TABLE projects ADD COLUMN IF NOT EXISTS description TEXT')
+        conn.commit()
+
+# Добавление столбца для названия файла фото проекта
+def add_photo_filename_column(self):
+    conn = sqlite3.connect(self.database)
+    with conn:
+        conn.execute('ALTER TABLE projects ADD COLUMN IF NOT EXISTS photo_filename TEXT')
+        conn.commit()
+
+# Вставка или обновление статуса проекта
+def insert_or_update_status(self, project_id, status_id):
+    sql = 'UPDATE projects SET status_id = ? WHERE project_id = ?'
+    self.__executemany(sql, [(status_id, project_id)])
+
+# Вставка или обновление навыка проекта
+def insert_or_update_skill(self, project_id, skill_id):
+    sql = 'INSERT OR IGNORE INTO project_skills VALUES (?, ?)'
+    self.__executemany(sql, [(project_id, skill_id)])
